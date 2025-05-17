@@ -1,0 +1,29 @@
+project/
+│── backend/                   # Express.js Backend
+│   |          
+│   ├── models/                # Mongoose Models
+│   │   ├── Hospital.js        # Hospital Schema
+│   │   ├── Patient.js         # Patient Schema
+│   ├── routes/                # Express Routes
+│   │   ├── hospitalRoutes.js  # Routes for hospital registration/login
+│   │   ├── patientRoutes.js   # Routes for managing patients
+│   ├── controllers/           # Controllers for handling logic
+│   │   ├── hospitalController.js
+│   │   ├── patientController.js
+│   ├── middleware/            # Middleware (e.g., authentication)
+│   │   ├── authMiddleware.js  
+│   ├── server.js              # Entry point for the backend
+|   │── package.json                # Backend dependencies
+│── frontend/                   # React.js Frontend
+│       |            # Public assets (favicon, etc.)
+│       |
+│       ├── pages/              # Different pages in the app
+│       │   ├── index.js         
+│       │   ├── HospitalRegister.js # Hospital Registration Page
+│       │   ├── HospitalLogin.js    # Hospital Login Page
+│       │   ├── Dashboard.js     # Hospital Dashboard (after login)
+│       │   ├── AddPatient.js    # Page for adding patient details
+│       │   ├── PatientRecords.js # List of registered patients
+│       │   ├── PatientDetail.js  # Display details of a specific patient
+         
+

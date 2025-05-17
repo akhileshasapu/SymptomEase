@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>View Patient</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #eef5ff;
+    }
+    .patient-card {
+      max-width: 600px;
+      margin: 60px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    .patient-card h4 {
+      margin-bottom: 20px;
+      color: #0d6efd;
+    }
+    .patient-info {
+      margin-bottom: 10px;
+    }
+    .patient-info strong {
+      width: 130px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="patient-card" id="patientDetails">
+      <h4 class="text-center">Patient Details</h4>
+      <div id="contentArea">
+        <!-- Content injected by JS -->
+      </div>
+      <div class="text-center mt-4">
+        <a href="patient_list.html" class="btn btn-outline-secondary">← Back to Patient List</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    function createInfoLine(label, value) {
+      return `
+        <div class="patient-info">
+          <strong>${label}:</strong> ${value || "-"}
+        </div>
+      `;
+    }
+
+    window.onload = async () => {
+      const patientId = getQueryParam("id");
+      const contentArea = document.getElementById("contentArea");
+
+      if (!patientId) {
+        contentArea.innerHTML = `<p class="text-danger">Invalid patient ID.</p>`;
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:3000/api/patients/search/by-id/${patientId}`);
+        if (!res.ok) {
+          contentArea.innerHTML = `<p class="text-danger">Patient not found.</p>`;
+          return;
+        }
+
+        const patient = await res.json();
+
+        contentArea.innerHTML = `
+          ${createInfoLine("Patient ID", patient.patientId)}
+          ${createInfoLine("Name", patient.name)}
+          ${createInfoLine("Age", patient.age)}
+          ${createInfoLine("Gender", patient.gender)}
+          ${createInfoLine("Phone", patient.phone)}
+          ${createInfoLine("Symptoms", patient.symptoms)}
+          ${createInfoLine("Allergies", patient.allergies)}
+          ${createInfoLine("Medications", patient.medications)}
+          ${createInfoLine("Other Info", patient.otherInfo)}
+          ${createInfoLine("Registered On", new Date(patient.createdAt).toLocaleString())}
+        `;
+      } catch (err) {
+        console.error("Error fetching patient:", err);
+        contentArea.innerHTML = `<p class="text-danger">An error occurred while fetching patient details.</p>`;
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Patient Login - SymptomEase</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f0f4f8;
+    }
+    .container {
+      max-width: 500px;
+      margin-top: 80px;
+    }
+    .card {
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card p-4">
+      <h3 class="text-center mb-4">Patient Login</h3>
+      <form id="loginForm">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="email" required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Login</button>
+        <div id="loginMsg" class="text-center mt-3" style="display: none;"></div>
+      </form>
+      <div class="mt-3 text-center">
+        Don't have an account? <a href="patient_register.html">Register here</a>
+      </div>
+    </div>
+  </div>
+<script>
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+  
+    try {
+      const res = await fetch("http://localhost:3000/api/patient-docs/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      console.log("Raw response:", res); // ✅ Debug line
+  
+      const data = await res.json();
+      console.log("Parsed JSON:", data); // ✅ Debug line
+  
+      const msgDiv = document.getElementById("loginMsg");
+      msgDiv.style.display = "block";
+      msgDiv.style.color = res.ok ? "green" : "red";
+      msgDiv.textContent = data.message;
+  
+      if (res.status === 404) {
+        setTimeout(() => {
+          alert("Patient not registered! Please register now.");
+          window.location.href = "patient_register.html";
+        }, 1500);
+      } else if (res.ok) {
+        setTimeout(() => {
+          window.location.href = "patient_dashboard.html?email=" + encodeURIComponent(email);
+        }, 1500);
+      }
+    } catch (err) {
+      console.error("⚠️ Login error (caught):", err);
+      alert("Something went wrong. Please try again later.");
+    }
+  });
+  </script>
+</body>
+</html>
